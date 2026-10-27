@@ -72,19 +72,20 @@ html, body {
   animation-delay: calc(var(--i) * 0.25s);
 }
 
-.degree {
+.year {
+  font-size: clamp(8px, 1.5vh, 13px);
+  color: var(--blush);
+  letter-spacing: 0.25em;
+}
+
+.from {
+  margin-top: clamp(4px, 1.5vh, 16px);
   font-size: clamp(8px, min(1.9vw, 1.9vh), 16px);
   color: var(--cream);
   padding: 0.8em 1.1em;
   border: 2px solid var(--blush);
   box-shadow: 4px 4px 0 var(--plum);
   letter-spacing: 0.12em;
-}
-
-.year {
-  font-size: clamp(8px, 1.5vh, 13px);
-  color: var(--blush);
-  letter-spacing: 0.25em;
 }
 
 .hint {

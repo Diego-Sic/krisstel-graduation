@@ -1,6 +1,6 @@
 # Congratulations Krisstel
 
-A pixel-art graduation celebration for Krisstel (Perito Contador Bilingüe, Class of 2026).
+A pixel-art graduation celebration for Krisstel (Class of 2026), from Diego Sic.
 
 The graduate sprite matches the ceremony outfit, holding a bouquet: a navy-black gown, a red stole with a white crest, a black mortarboard with a red tassel, and long dark hair.
 
