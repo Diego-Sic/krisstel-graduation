@@ -8,7 +8,7 @@ The graduate sprite matches the ceremony outfit, holding a bouquet: a navy-black
 
 Open `index.html` in a browser. No build step is needed.
 
-Click or tap anywhere to scatter petals.
+Click or tap anywhere to scatter petals (the on-screen hint is in Spanish).
 
 ## Structure
 
