@@ -1,7 +1,7 @@
 window.Grad = window.Grad || {};
 
 // 24x31 graduate: long dark hair, navy gown, red stole with white crest,
-// mortarboard, diploma with red ribbon. Tassel is drawn separately so it can swing.
+// mortarboard, bouquet of roses tied with a red ribbon. Tassel is drawn separately so it can swing.
 Grad.GRADUATE = Object.freeze([
   '....kkkkkkkkkkkkkkkk....',
   '..KKKKKKKKKKKKKKKKKKKK..',
@@ -15,16 +15,16 @@ Grad.GRADUATE = Object.freeze([
   '.....HHHsSSSSSSsHHH.....',
   '....HHHHHsSSSSsHHHHH....',
   '...HHHGGRRsSSsRRGGHHH...',
-  '..HHGGGRRRRssRRRRGGGHH..',
-  '..HHGGGRRRRGGRRRRGGGHH..',
-  '..HGGGGRRRRGGRWWRGGGGH..',
-  '..HGGGGRRRRGGRWWRGGGGH..',
-  '..GGGGGRRRRGGRRRRGGGGG..',
-  '..GgGGGRRRRGGRRRRGGGgG..',
-  '..GgGSDDDDDBBDDDDDSGgG..',
-  '..GgGGGRRRRGGRRRRGGGgG..',
-  '..GgGGGrRRRGGRRRrGGGgG..',
-  '..GgGGGrrrrGGrrrrGGGgG..',
+  '..HHGGGRRRRssRWWRGGGHH..',
+  '..HHGGGRRRRGGRWWRGGGHH..',
+  '..HGGGGRVPPYYPPVRGGGGH..',
+  '..HGGGGVPOoYYoOPVGGGGH..',
+  '..GGGGGPYOoOOoOYPGGGGG..',
+  '..GgGGGVPPYVVYPPVGGGgG..',
+  '..GgGGGSVNNBBNNVSGGGgG..',
+  '..GgGGGRRRNNNnRRRGGGgG..',
+  '..GgGGGrRRRNnRRRrGGGgG..',
+  '..GgGGGrrrrvvrrrrGGGgG..',
   '..GgGGGGGGGGGGGGGGGGgG..',
   '..GgGGGGGGGgGGGGGGGGgG..',
   '.GGgGGGGGGGgGGGGGGGGgGG.',

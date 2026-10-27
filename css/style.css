@@ -1,11 +1,10 @@
 :root {
-  --ink: #07041a;
-  --white: #fffaf0;
-  --gold: #ffd23f;
-  --red: #e3261f;
-  --blood: #6e0910;
+  --ink: #1f1533;
+  --cream: #fff4ea;
+  --blush: #f7b9cb;
+  --rose: #c9406a;
+  --plum: #2a1638;
   --pixel-font: 'Press Start 2P', ui-monospace, monospace;
-  --shake: 0px, 0px;
 }
 
 * { box-sizing: border-box; margin: 0; }
@@ -14,10 +13,10 @@ html, body {
   height: 100%;
   overflow: hidden;
   background: var(--ink);
-  color: var(--white);
+  color: var(--cream);
   font-family: var(--pixel-font);
   -webkit-font-smoothing: none;
-  cursor: crosshair;
+  cursor: pointer;
   user-select: none;
 }
 
@@ -26,7 +25,6 @@ html, body {
   inset: 0;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  transform: translate(var(--shake));
 }
 
 .hud {
@@ -40,61 +38,53 @@ html, body {
   gap: clamp(10px, 2.4vh, 22px);
   text-align: center;
   pointer-events: none;
-  transform: translate(var(--shake));
 }
 
 .kicker {
-  font-size: clamp(9px, 1.6vh, 14px);
-  color: var(--gold);
-  letter-spacing: 0.2em;
-  animation: blink 1s steps(2, start) infinite;
+  font-size: clamp(8px, 1.5vh, 13px);
+  color: var(--blush);
+  letter-spacing: 0.25em;
 }
 
 .title {
-  font-size: clamp(14px, min(4.8vw, 5.4vh), 54px);
+  font-size: clamp(12px, min(3.6vw, 4vh), 40px);
   font-weight: 400;
-  letter-spacing: 0.06em;
-  text-shadow:
-    3px 3px 0 var(--red),
-    6px 6px 0 var(--blood),
-    0 0 24px rgba(255, 60, 40, 0.55);
+  letter-spacing: 0.14em;
+  color: var(--cream);
+  text-shadow: 2px 2px 0 var(--plum);
 }
 
 .name {
   display: flex;
-  gap: 0.04em;
-  font-size: clamp(28px, min(10vw, 12vh), 128px);
+  gap: 0.06em;
+  font-size: clamp(28px, min(10vw, 12vh), 120px);
   line-height: 1;
-  filter:
-    drop-shadow(4px 4px 0 var(--blood))
-    drop-shadow(4px 4px 0 #2a0206)
-    drop-shadow(0 0 18px rgba(255, 140, 40, 0.65));
+  color: var(--cream);
+  text-shadow:
+    3px 3px 0 var(--rose),
+    6px 6px 0 var(--plum),
+    0 0 28px rgba(255, 190, 210, 0.45);
 }
 
 .name span {
   display: inline-block;
-  background: linear-gradient(180deg,
-    #fffbd0 0 22%, var(--gold) 22% 48%, #ff8a1c 48% 72%, var(--red) 72% 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: hop 1.2s steps(4, end) infinite;
-  animation-delay: calc(var(--i) * 0.12s);
+  animation: float 4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.25s);
 }
 
 .degree {
-  font-size: clamp(9px, min(2.2vw, 2.2vh), 20px);
-  color: var(--white);
-  background: var(--red);
-  padding: 0.7em 1em;
-  box-shadow: 0 0 0 3px var(--white), 0 0 0 6px var(--red), 6px 6px 0 6px var(--blood);
-  letter-spacing: 0.08em;
+  font-size: clamp(8px, min(1.9vw, 1.9vh), 16px);
+  color: var(--cream);
+  padding: 0.8em 1.1em;
+  border: 2px solid var(--blush);
+  box-shadow: 4px 4px 0 var(--plum);
+  letter-spacing: 0.12em;
 }
 
 .year {
-  font-size: clamp(9px, 1.8vh, 16px);
-  color: var(--gold);
-  letter-spacing: 0.2em;
+  font-size: clamp(8px, 1.5vh, 13px);
+  color: var(--blush);
+  letter-spacing: 0.25em;
 }
 
 .hint {
@@ -104,10 +94,9 @@ html, body {
   bottom: clamp(8px, 2vh, 20px);
   text-align: center;
   font-size: clamp(7px, 1.2vh, 11px);
-  color: var(--white);
-  opacity: 0.75;
+  color: var(--cream);
+  opacity: 0.6;
   pointer-events: none;
-  animation: blink 1.4s steps(2, start) infinite;
 }
 
 .scanlines {
@@ -115,19 +104,15 @@ html, body {
   inset: 0;
   pointer-events: none;
   background:
-    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 3px),
-    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 55%, rgba(20, 8, 30, 0.45) 100%);
 }
 
-@keyframes hop {
+@keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-0.12em); }
-}
-
-@keyframes blink {
-  to { visibility: hidden; }
+  50% { transform: translateY(-0.06em); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .name span, .kicker, .hint { animation: none; }
+  .name span { animation: none; }
 }

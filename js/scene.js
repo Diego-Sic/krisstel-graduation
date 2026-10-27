@@ -1,6 +1,7 @@
 window.Grad = window.Grad || {};
 
-// Static backdrop (dithered sky, stage) is pre-rendered once per resize.
+// Static backdrop (dithered dusk sky, grass) is pre-rendered once per resize;
+// stars, glow and the swaying flower bed are drawn every frame.
 (function () {
   const BAYER4 = [
     [0, 8, 2, 10],
@@ -8,10 +9,11 @@ window.Grad = window.Grad || {};
     [3, 11, 1, 9],
     [15, 7, 13, 5]
   ];
-  const STAGE_HEIGHT = 9;
+  const GROUND_HEIGHT = 9;
+  const FLOWER_SPACING = 4;
 
   function floorY(H) {
-    return H - STAGE_HEIGHT;
+    return H - GROUND_HEIGHT;
   }
 
   function paintSky(ctx, W, H) {
@@ -38,23 +40,20 @@ window.Grad = window.Grad || {};
         const inside = x * x + y * y <= R * R;
         const bite = (x + 2) * (x + 2) + (y - 1) * (y - 1) <= R * R;
         if (inside && !bite) {
-          ctx.fillStyle = x + y < -3 ? '#fffbe0' : '#f3dc8e';
+          ctx.fillStyle = x + y < -3 ? '#fffbe0' : '#f6e3b0';
           ctx.fillRect(cx + x, cy + y, 1, 1);
         }
       }
     }
   }
 
-  function paintStage(ctx, W, H) {
+  function paintGround(ctx, W, H) {
     const top = floorY(H);
-    const S = Grad.STAGE;
-    ctx.fillStyle = S.trim;
-    ctx.fillRect(0, top, W, 1);
-    ctx.fillStyle = S.trimShade;
-    ctx.fillRect(0, top + 1, W, 1);
-    for (let y = top + 2; y < H; y++) {
+    const G = Grad.GARDEN;
+    for (let y = top; y < H; y++) {
       for (let x = 0; x < W; x++) {
-        ctx.fillStyle = (x + y) % 6 === 0 ? S.carpetDark : S.carpet;
+        const edge = y === top || (y === top + 1 && (x * 7) % 5 === 0);
+        ctx.fillStyle = edge ? G.grassTop : (x * 3 + y * 5) % 7 === 0 ? G.grassDark : G.grass;
         ctx.fillRect(x, y, 1, 1);
       }
     }
@@ -67,55 +66,83 @@ window.Grad = window.Grad || {};
     const ctx = canvas.getContext('2d');
     paintSky(ctx, W, H);
     paintMoon(ctx, W);
-    paintStage(ctx, W, H);
+    paintGround(ctx, W, H);
     return canvas;
   }
 
   function makeStars(W, H) {
-    const count = Math.round((W * floorY(H)) / 70);
+    const count = Math.round((W * floorY(H)) / 160);
     return Array.from({ length: count }, () => ({
       x: Math.floor(Math.random() * W),
-      y: Math.floor(Math.random() * floorY(H) * 0.75),
+      y: Math.floor(Math.random() * floorY(H) * 0.45),
       phase: Math.random() * Math.PI * 2,
-      speed: 1 + Math.random() * 3,
-      bright: Math.random() < 0.15
+      speed: 0.6 + Math.random() * 1.4
     }));
+  }
+
+  // One flower per slot along the ground, leaving a clearing where she stands.
+  function makeFlowers(W, H, clearing) {
+    const base = floorY(H) + 1;
+    const slots = Math.floor(W / FLOWER_SPACING);
+    return Array.from({ length: slots }, (_, i) => i * FLOWER_SPACING + 2)
+      .filter((x) => x < clearing.from || x > clearing.to)
+      .map((x) => ({
+        x: x + Math.floor(Math.random() * 2),
+        base,
+        height: 2 + Math.floor(Math.random() * 4),
+        kind: Math.random() < 0.3 ? 'tulip' : 'daisy',
+        color: Grad.FLOWER_HEADS[Math.floor(Math.random() * Grad.FLOWER_HEADS.length)],
+        phase: Math.random() * Math.PI * 2
+      }));
   }
 
   function drawStars(ctx, stars, time) {
     stars.forEach((s) => {
       const glow = Math.sin(time * s.speed + s.phase);
-      if (glow < -0.3) return;
-      ctx.fillStyle = glow > 0.7 ? '#ffffff' : '#b9a6e8';
+      if (glow < 0) return;
+      ctx.fillStyle = glow > 0.75 ? '#fff6f0' : '#d8bfe6';
       ctx.fillRect(s.x, s.y, 1, 1);
-      if (s.bright && glow > 0.8) {
-        ctx.fillStyle = 'rgba(255,255,255,0.55)';
-        ctx.fillRect(s.x - 1, s.y, 1, 1);
-        ctx.fillRect(s.x + 1, s.y, 1, 1);
-        ctx.fillRect(s.x, s.y - 1, 1, 1);
-        ctx.fillRect(s.x, s.y + 1, 1, 1);
-      }
     });
   }
 
-  function drawSpotlights(ctx, W, H, cx, time) {
-    const top = floorY(H);
-    const sway = Math.sin(time * 0.7) * 4;
-    ctx.fillStyle = Grad.STAGE.spot;
-    [[-W * 0.05, cx - 16 + sway, cx + 6 + sway], [W * 1.05, cx - 6 - sway, cx + 16 - sway]]
-      .forEach(([sx, l, r]) => {
-        ctx.beginPath();
-        ctx.moveTo(sx, -2);
-        ctx.lineTo(sx + 3, -2);
-        ctx.lineTo(r, top);
-        ctx.lineTo(l, top);
-        ctx.closePath();
-        ctx.fill();
-      });
-    ctx.fillStyle = 'rgba(255, 214, 120, 0.22)';
-    ctx.fillRect(Math.round(cx - 15), top - 1, 30, 1);
-    ctx.fillRect(Math.round(cx - 11), top, 22, 1);
+  function drawFlower(ctx, f, time) {
+    const G = Grad.GARDEN;
+    const sway = Math.sin(time * 1.2 + f.phase) > 0.5 ? 1 : 0;
+    const top = f.base - f.height;
+    ctx.fillStyle = G.stem;
+    ctx.fillRect(f.x, top + 1, 1, f.height);
+    ctx.fillStyle = G.leaf;
+    ctx.fillRect(f.x + 1, f.base - 1, 1, 1);
+    const hx = f.x + sway;
+    ctx.fillStyle = f.color;
+    if (f.kind === 'tulip') {
+      ctx.fillRect(hx - 1, top - 1, 3, 2);
+      ctx.fillRect(hx - 1, top - 2, 1, 1);
+      ctx.fillRect(hx + 1, top - 2, 1, 1);
+      return;
+    }
+    ctx.fillRect(hx - 1, top, 3, 1);
+    ctx.fillRect(hx, top - 1, 1, 3);
+    ctx.fillStyle = G.center;
+    ctx.fillRect(hx, top, 1, 1);
   }
 
-  Grad.Scene = Object.freeze({ floorY, renderBackground, makeStars, drawStars, drawSpotlights });
+  function drawFlowers(ctx, flowers, time) {
+    flowers.forEach((f) => drawFlower(ctx, f, time));
+  }
+
+  function drawGlow(ctx, H, cx, time) {
+    const top = floorY(H);
+    const breathe = Math.sin(time * 0.8) > 0 ? 1 : 0;
+    ctx.fillStyle = Grad.GARDEN.glow;
+    [[22, 30], [17, 24], [12, 18]].forEach(([rx, ry]) => {
+      ctx.beginPath();
+      ctx.ellipse(cx, top - 14, rx + breathe, ry + breathe, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+
+  Grad.Scene = Object.freeze({
+    floorY, renderBackground, makeStars, makeFlowers, drawStars, drawFlowers, drawGlow
+  });
 })();
